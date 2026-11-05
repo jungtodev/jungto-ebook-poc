@@ -1,0 +1,183 @@
+{
+  "schema_version": "1.0",
+  "edition_version": "v1.0.0",
+  "e_isbn": "979-11-98765-01-2",
+  "publication_type": "DIGITAL_EBOOK_ONLY_NO_PAPER",
+  "tax_policy": "VAT_EXEMPT_0_PERCENT",
+  "payment_policy": "VIRTUAL_ACCOUNT_ONLY_72H_TTL",
+  "drm_policy": {
+    "engine": "GEUMGANG_DRM_V2",
+    "cloudfront_oac_signed_url_ttl_sec": 300,
+    "http_206_range_chunk_bytes": 65536,
+    "ios_safari_sliding_window_pages": 3,
+    "max_registered_devices": 3,
+    "forensic_watermark_alg": "JTS-WM-SHA256"
+  },
+  "generated_at": "2026-10-23T15:32:46.539204+00:00",
+  "volumes": [
+    {
+      "volume_no": 1,
+      "code": "VOL1",
+      "title": "제1권 경전편 (經典篇)",
+      "subtitle": "근본 불교 경전과 대승 경전의 핵심 요체",
+      "s3_key": "releases/v1.0.0/books/vol1_linearized.pdf",
+      "search_index_key": "releases/v1.0.0/index/search_vol1.json",
+      "file_size_bytes": 278966,
+      "sha256": "ca972830b615f0824c5e94873411ead1d6135e0ae37c011a421490ef8426e8fe",
+      "linearized_fast_web_view": true,
+      "range_chunk_size_bytes": 65536,
+      "total_chunks": 5,
+      "total_pages": 10,
+      "roman_preface_pages": 2,
+      "chunks_preview": [
+        {
+          "chunk_index": 0,
+          "range_header": "bytes=0-65535",
+          "content_range": "bytes 0-65535/278966",
+          "byte_length": 65536
+        },
+        {
+          "chunk_index": 1,
+          "range_header": "bytes=65536-131071",
+          "content_range": "bytes 65536-131071/278966",
+          "byte_length": 65536
+        },
+        {
+          "chunk_index": 2,
+          "range_header": "bytes=131072-196607",
+          "content_range": "bytes 131072-196607/278966",
+          "byte_length": 65536
+        },
+        {
+          "chunk_index": 3,
+          "range_header": "bytes=196608-262143",
+          "content_range": "bytes 196608-262143/278966",
+          "byte_length": 65536
+        }
+      ]
+    },
+    {
+      "volume_no": 2,
+      "code": "VOL2",
+      "title": "제2권 사상편 (思想篇)",
+      "subtitle": "인간 붓다의 깨달음과 정토 사상의 역사적 전개",
+      "s3_key": "releases/v1.0.0/books/vol2_linearized.pdf",
+      "search_index_key": "releases/v1.0.0/index/search_vol2.json",
+      "file_size_bytes": 234879,
+      "sha256": "b57957247db0a103fa8b3b0e9598e2724e7cc6084f177df01febb2b8658f8378",
+      "linearized_fast_web_view": true,
+      "range_chunk_size_bytes": 65536,
+      "total_chunks": 4,
+      "total_pages": 10,
+      "roman_preface_pages": 2,
+      "chunks_preview": [
+        {
+          "chunk_index": 0,
+          "range_header": "bytes=0-65535",
+          "content_range": "bytes 0-65535/234879",
+          "byte_length": 65536
+        },
+        {
+          "chunk_index": 1,
+          "range_header": "bytes=65536-131071",
+          "content_range": "bytes 65536-131071/234879",
+          "byte_length": 65536
+        },
+        {
+          "chunk_index": 2,
+          "range_header": "bytes=131072-196607",
+          "content_range": "bytes 131072-196607/234879",
+          "byte_length": 65536
+        },
+        {
+          "chunk_index": 3,
+          "range_header": "bytes=196608-234878",
+          "content_range": "bytes 196608-234878/234879",
+          "byte_length": 38271
+        }
+      ]
+    },
+    {
+      "volume_no": 3,
+      "code": "VOL3",
+      "title": "제3권 수행편 (修行篇)",
+      "subtitle": "일상에서 깨어있는 정토 행자의 마음공부와 실천 수행",
+      "s3_key": "releases/v1.0.0/books/vol3_linearized.pdf",
+      "search_index_key": "releases/v1.0.0/index/search_vol3.json",
+      "file_size_bytes": 227338,
+      "sha256": "48fd458989236db917b7d9f1683ec3187af5c604a1752032a88efbc0e515c5cd",
+      "linearized_fast_web_view": true,
+      "range_chunk_size_bytes": 65536,
+      "total_chunks": 4,
+      "total_pages": 10,
+      "roman_preface_pages": 2,
+      "chunks_preview": [
+        {
+          "chunk_index": 0,
+          "range_header": "bytes=0-65535",
+          "content_range": "bytes 0-65535/227338",
+          "byte_length": 65536
+        },
+        {
+          "chunk_index": 1,
+          "range_header": "bytes=65536-131071",
+          "content_range": "bytes 65536-131071/227338",
+          "byte_length": 65536
+        },
+        {
+          "chunk_index": 2,
+          "range_header": "bytes=131072-196607",
+          "content_range": "bytes 131072-196607/227338",
+          "byte_length": 65536
+        },
+        {
+          "chunk_index": 3,
+          "range_header": "bytes=196608-227337",
+          "content_range": "bytes 196608-227337/227338",
+          "byte_length": 30730
+        }
+      ]
+    },
+    {
+      "volume_no": 4,
+      "code": "VOL4",
+      "title": "제4권 실천편 (實踐篇)",
+      "subtitle": "맑은 마음, 좋은 벗, 깨끗한 땅을 일구는 사회적 실천",
+      "s3_key": "releases/v1.0.0/books/vol4_linearized.pdf",
+      "search_index_key": "releases/v1.0.0/index/search_vol4.json",
+      "file_size_bytes": 225680,
+      "sha256": "210a5a03ab1c1dea863b566e0a6f9fef7e75316737d803ee9b6f97c87ad9622a",
+      "linearized_fast_web_view": true,
+      "range_chunk_size_bytes": 65536,
+      "total_chunks": 4,
+      "total_pages": 10,
+      "roman_preface_pages": 2,
+      "chunks_preview": [
+        {
+          "chunk_index": 0,
+          "range_header": "bytes=0-65535",
+          "content_range": "bytes 0-65535/225680",
+          "byte_length": 65536
+        },
+        {
+          "chunk_index": 1,
+          "range_header": "bytes=65536-131071",
+          "content_range": "bytes 65536-131071/225680",
+          "byte_length": 65536
+        },
+        {
+          "chunk_index": 2,
+          "range_header": "bytes=131072-196607",
+          "content_range": "bytes 131072-196607/225680",
+          "byte_length": 65536
+        },
+        {
+          "chunk_index": 3,
+          "range_header": "bytes=196608-225679",
+          "content_range": "bytes 196608-225679/225680",
+          "byte_length": 29072
+        }
+      ]
+    }
+  ]
+}

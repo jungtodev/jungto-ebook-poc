@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+  <title>정토회 『정토대전(淨土大典)』 eBook 통합 서비스 - 맑은 마음, 좋은 벗, 깨끗한 땅</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Mozilla PDF.js v3.11.174 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf_viewer.min.css" />
+  <!-- 나눔스퀘어 & 나눔스퀘어라운드 (jungto.org 공식 웹폰트) -->
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/moonspam/NanumSquare@2.0/nanumsquare.css" />
+  <link rel="stylesheet" type="text/css"
+    href="https://cdn.jsdelivr.net/gh/innks/NanumSquareRound@master/nanumsquareround.min.css" />
+  <style>
+    :root {
+      --jungto-orange: #f26522;
+      --jungto-orange-btn: #ee8545;
+      --jungto-orange-hover: #d1743b;
+      --jungto-orange-soft: #fde7da;
+      --jungto-teal: #519ea6;
+      --jungto-teal-dark: #36858c;
+      --jungto-teal-soft: #eef7f8;
+      --jungto-border: #ebe5e6;
+      --jungto-border-input: #d6d6d6;
+      --jungto-bg: #f6f6f6;
+      --jungto-text: #333333;
+      --jungto-subtext: #6d6d6d;
+    }
+
+    body {
+      font-family: 'NanumSquare', 'NanumSquareRound', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', sans-serif;
+      color: var(--jungto-text);
+      letter-spacing: -0.04em;
+      background-color: var(--jungto-bg);
+    }
+
+    /* jungto.org GNB Active Tab Style (color: #f26522 + 3px bottom bar) */
+    .jungto-gnb-tab {
+      position: relative;
+      color: #333333;
+      font-weight: 700;
+      transition: color 0.15s ease;
+    }
+
+    .jungto-gnb-tab:hover {
+      color: #f26522;
+    }
+
+    .jungto-gnb-active {
+      color: #f26522 !important;
+      font-weight: 800;
+    }
+
+    .jungto-gnb-active::after {
+      content: "";
+      position: absolute;
+      bottom: -1px;
+      left: 12px;
+      right: 12px;
+      height: 3px;
+      background-color: #f26522;
+      z-index: 5;
+    }
+
+    /* Utility Links Vertical Divider (jungto.org .wrap-util style) */
+    .jungto-util-item {
+      position: relative;
+      padding: 0 10px;
+    }
+
+    .jungto-util-item+.jungto-util-item::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 1px;
+      height: 11px;
+      background-color: #cccccc;
+    }
+
+    /* Viewer Theme Modes */
+    .theme-paper {
+      background-color: #ebe5d8;
+    }
+
+    .theme-paper .pdf-page-card {
+      background-color: #fbf8f1;
+      box-shadow: 0 14px 34px -8px rgba(45, 35, 20, 0.25);
+    }
+
+    .theme-paper canvas {
+      mix-blend-mode: multiply;
+    }
+
+    .theme-light {
+      background-color: #e6e7e7;
+    }
+
+    .theme-light .pdf-page-card {
+      background-color: #ffffff;
+      box-shadow: 0 14px 34px -8px rgba(0, 0, 0, 0.18);
+    }
+
+    .theme-dark {
+      background-color: #1c1917;
+    }
+
+    .theme-dark .pdf-page-card {
+      background-color: #292524;
+      box-shadow: 0 16px 40px -8px rgba(0, 0, 0, 0.8);
+    }
+
+    .theme-dark canvas {
+      filter: invert(0.88) hue-rotate(180deg) contrast(1.05);
+    }
+
+    /* Print Media Block (DRM Security) */
+    @media print {
+      body * {
+        display: none !important;
+      }
+
+      body::after {
+        content: "보안 정책: 『정토대전』 전자책은 저작권 보호를 위해 인쇄 및 PDF 출력이 전면 제한됩니다.";
+        display: block !important;
+        padding: 4rem;
+        font-size: 1.5rem;
+        font-weight: bold;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+
+<body class="bg-[#f6f6f6] text-[#333333] h-screen flex flex-col overflow-hidden select-none">
+
+  <!-- ========================================================================
+       1. JUNGTO.ORG OFFICIAL 2-TIER WHITE HEADER & GNB
+       ======================================================================== -->
+  <header class="bg-white shrink-0 z-40 shadow-[0_1px_4px_rgba(0,0,0,0.04)]">
+    <!-- Top Row: wrap-logo + wrap-util -->
+    <div class="border-b border-[#ebe5e6] px-4 md:px-8 h-[60px] flex items-center justify-between max-w-7xl mx-auto">
+      <div class="flex items-center gap-3">
+        <a href="javascript:void(0)" onclick="switchView('viewer')" class="flex items-center gap-2.5">
+          <img src="jungto_org_logo.png" alt="정토회 로고" class="h-9 md:h-11 w-auto object-contain"
+            onerror="this.style.display='none'" />
+          <div class="border-l border-[#ebe5e6] pl-3">
+            <div class="flex items-center gap-2">
+              <span class="font-extrabold text-base md:text-lg text-[#333333] tracking-tight">『정토대전』 디지털 경전·사료관</span>
+              <span
+                class="hidden sm:inline-block px-2 py-0.5 rounded-full bg-[#fde7da] text-[#f26522] text-[11px] font-extrabold">마이정토
+                eBook v1.0.1</span>
+            </div>
+            <div class="text-[11px] text-[#6d6d6d] hidden md:block">
+              맑은 마음, 좋은 벗, 깨끗한 땅 · 정토회 회원 전용 전자책 플랫폼
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <!-- Right Utility Bar (jungto.org .wrap-util style) -->
+      <div class="flex items-center text-xs text-[#333333]">
+        <div class="hidden lg:flex items-center">
+          <span class="jungto-util-item font-bold text-[#333333]">
+            김정토(<span class="text-[#f26522]">법경</span>)님
+          </span>
+          <span class="jungto-util-item">
+            <span id="headerEntitlementBadge"></span>
+          </span>
+          <span class="jungto-util-item hidden xl:inline-block">
+            <span id="headerReadingStartBadge"></span>
+          </span>
+          <span class="jungto-util-item hidden 2xl:inline-block">
+            <span id="headerSignedUrlTtl" class="font-mono text-[11px] text-[#6d6d6d]">Signed URL 04:55</span>
+          </span>
+        </div>
+        <button onclick="resetAllState()" title="초기 검수 상태로 데이터 초기화"
+          class="ml-2 px-3 py-1.5 rounded bg-[#f6f6f6] hover:bg-[#ebebeb] text-[#333333] text-xs font-bold border border-[#d6d6d6] transition">
+          🔄 검수 초기화
+        </button>
+      </div>
+    </div>
+
+    <!-- Bottom Row: wrap-gnb (jungto.org GNB Navigation Bar) -->
+    <div class="border-b border-[#ebe5e6] bg-white">
+      <nav
+        class="max-w-7xl mx-auto px-4 flex items-center justify-center md:justify-start gap-2 md:gap-8 h-[48px] text-xs md:text-[15px]">
+        <button id="nav-btn-store" onclick="switchView('store')"
+          class="jungto-gnb-tab h-full px-3 md:px-4 flex items-center gap-1.5">
+          <span>1. 정토대전 구매·신청</span>
+        </button>
+        <button id="nav-btn-library" onclick="switchView('library')"
+          class="jungto-gnb-tab h-full px-3 md:px-4 flex items-center gap-1.5">
+          <span>2. 내 서재 (전 4권)</span>
+        </button>
+        <button id="nav-btn-viewer" onclick="switchView('viewer')"
+          class="jungto-gnb-tab jungto-gnb-active h-full px-3 md:px-4 flex items-center gap-1.5">
+          <span>3. eBook 웹 뷰어</span>
+        </button>
+        <button id="nav-btn-ops" onclick="switchView('ops')"
+          class="jungto-gnb-tab h-full px-3 md:px-4 flex items-center gap-1.5">
+          <span>4. 시스템국 운영·CS 콘솔</span>
+        </button>
+        <a href="jungto_ebook_architecture_diagram.html"
+          class="jungto-gnb-tab h-full px-3 md:px-4 flex items-center gap-1.5 text-[#519ea6] font-bold hover:text-[#f26522]">
+          <span>5. 시스템 구성도 (4-Layer 도면) ↗</span>
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ========================================================================
+       VIEW 1: STOREFRONT & CHECKOUT (jungto.org Clean White & Orange/Teal Look)
+       ======================================================================== -->
+  <main id="view-store" class="hidden flex-1 overflow-y-auto bg-[#f6f6f6] text-[#333333] p-4 md:p-8 select-text">
+    <div class="max-w-5xl mx-auto space-y-6">
+      <!-- Current Session & Order Summary -->
+      <div id="storeCurrentOrderSummary" class="bg-white rounded-xl p-5 shadow-sm border border-[#ebe5e6]"></div>
+
+      <!-- Product Hero & Purchase Form -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <!-- Left 5 cols: Book Set Info & Sample Preview (Jungto Jade Teal #519ea6 Card) -->
+        <div class="lg:col-span-5 bg-[#519ea6] text-white rounded-xl p-6 flex flex-col justify-between shadow-sm">
+          <div>
+            <span class="inline-block px-3 py-1 rounded-full bg-white/20 text-white text-xs font-bold">
+              정토회 회원 전용 · 100% 전자책(eBook) 단독 발행
+            </span>
+            <h1 class="text-2xl font-extrabold mt-3.5 text-white leading-snug">『정토대전 (淨土大典)』<br />전 4권 디지털 전자책 세트</h1>
+            <p class="text-xs text-white/90 mt-1.5">종이책 미발행 · 마이정토 eBook 전 4권 영구 열람 라이선스</p>
+
+            <div class="mt-5 space-y-3 text-xs border-t border-white/25 pt-4">
+              <div class="flex justify-between">
+                <span class="text-white/80">발행 형태</span>
+                <span class="font-bold">디지털 전자책(eBook) 전용 (종이책 미발행)</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-white/80">구성 권호</span>
+                <span class="font-bold">제1권 경전 · 제2권 사료 · 제3권 법문 · 제4권 색인</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-white/80">보급 정가 (면세)</span>
+                <span class="text-xl font-extrabold text-[#fde7da]">200,000원</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-white/80">결제 수단 (단일)</span>
+                <span class="font-bold text-[#fde7da]">PG 1회용 가상계좌 (무통장 계좌 송금)</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-white/80">ISBN / 부가세</span>
+                <span>전자출판물 전용 ISBN 발급 / 부가세 면세(0%)</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-white/80">지원 디바이스</span>
+                <span>PC · Mac · iPad · 갤럭시탭 · 스마트폰 웹 즉시 열람</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-6 pt-4 border-t border-white/25 space-y-2">
+            <button onclick="requestOpenVolume('preview', 1)"
+              class="w-full py-3.5 rounded bg-white hover:bg-[#fbfbfb] text-[#36858c] font-extrabold text-sm shadow-sm transition flex items-center justify-center gap-2">
+              👁️ 구매 전 무료 맛보기 샘플 PDF 즉시 열람 (제1권 발췌)
+            </button>
+            <p class="text-[11px] text-white/90 text-center">
+              ※ 무료 맛보기 샘플 열람은 청약철회 제한(ReadingStart)에 영향을 주지 않습니다.
+            </p>
+          </div>
+        </div>
+
+        <!-- Right 7 cols: Virtual Account Selection, Refund Account & Statutory Consents -->
+        <div class="lg:col-span-7 bg-white rounded-xl p-6 shadow-sm border border-[#ebe5e6] space-y-5">
+          <h2 class="text-lg font-extrabold text-[#333333] border-b border-[#ebe5e6] pb-3">
+            1회용 가상계좌(송금) 신청 정보 및 전자출판물 법적 필수 고지 동의
+          </h2>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+            <div>
+              <label class="font-bold text-[#6d6d6d] block mb-1">송금할 가상계좌 은행 선택</label>
+              <select id="selectVbankName"
+                class="w-full rounded border border-[#d6d6d6] px-3 py-2.5 bg-white font-bold text-[#333333] focus:outline-none focus:border-[#519ea6]">
+                <option value="국민은행">국민은행 (1회용 가상계좌)</option>
+                <option value="신한은행">신한은행 (1회용 가상계좌)</option>
+                <option value="우리은행">우리은행 (1회용 가상계좌)</option>
+                <option value="하나은행">하나은행 (1회용 가상계좌)</option>
+                <option value="농협은행">농협은행 (1회용 가상계좌)</option>
+                <option value="기업은행">기업은행 (1회용 가상계좌)</option>
+              </select>
+            </div>
+            <div>
+              <label class="font-bold text-[#6d6d6d] block mb-1">송금 입금자 성명</label>
+              <input id="inputDepositorName" type="text" value="김정토"
+                class="w-full rounded border border-[#d6d6d6] px-3 py-2.5 font-bold focus:outline-none focus:border-[#519ea6]" />
+            </div>
+            <div>
+              <label class="font-bold text-[#6d6d6d] block mb-1">현금영수증 발급 번호 (선택)</label>
+              <input id="inputCashReceiptPhone" type="text" value="010-7788-1080"
+                class="w-full rounded border border-[#d6d6d6] px-3 py-2.5 font-mono focus:outline-none focus:border-[#519ea6]" />
+            </div>
+            <div>
+              <label class="font-bold text-[#6d6d6d] block mb-1">미열람 환불 시 반환 은행</label>
+              <select id="selectRefundBank"
+                class="w-full rounded border border-[#d6d6d6] px-3 py-2.5 bg-[#fbfbfb] text-[#333333] focus:outline-none focus:border-[#519ea6]">
+                <option value="국민은행">국민은행</option>
+                <option value="신한은행">신한은행</option>
+                <option value="우리은행">우리은행</option>
+                <option value="하나은행">하나은행</option>
+                <option value="농협은행">농협은행</option>
+              </select>
+            </div>
+            <div class="md:col-span-2">
+              <label class="font-bold text-[#6d6d6d] block mb-1">미열람 청약철회(환불) 시 반환받을 본인 계좌번호 (예금주: 김정토)</label>
+              <input id="inputRefundAccount" type="text" value="110-482-990182"
+                class="w-full rounded border border-[#d6d6d6] px-3 py-2.5 bg-[#fbfbfb] font-mono focus:outline-none focus:border-[#519ea6]" />
+            </div>
+          </div>
+
+          <!-- Statutory Checkboxes -->
+          <div class="p-4 rounded-lg bg-[#fbfbfb] border border-[#ebe5e6] space-y-2.5 text-xs">
+            <div class="font-extrabold text-[#333333] mb-1">📋 구매 전 전자출판물 법정 고지 확인 (필수 동의 · 종이책 미발행)</div>
+            <label class="flex items-start gap-2.5 cursor-pointer">
+              <input id="chkConsentRefund" type="checkbox" checked class="mt-0.5 w-4 h-4 accent-[#f26522]" />
+              <span>
+                <strong class="text-[#f26522]">[전자책 전용 및 청약철회 제한 고지]</strong> 본 상품은 실물 종이책이 없는 100% 디지털 전자책(eBook)이며,
+                전자상거래법 제17조 제2항 제5호에 의거 가상계좌 송금 후 <strong>최초 1회 이상 열람 개시(ReadingStart)한 이후에는 단순 변심에 의한 환불이 제한</strong>됨에
+                동의합니다.
+              </span>
+            </label>
+            <label class="flex items-start gap-2.5 cursor-pointer">
+              <input id="chkConsentDrm" type="checkbox" checked class="mt-0.5 w-4 h-4 accent-[#f26522]" />
+              <span>
+                <strong class="text-[#36858c]">[저작권 및 동적 워터마크 고지]</strong> 본 전자책은 원본 PDF 다운로드 및 인쇄가 차단되어 있으며, 열람 화면에 구매
+                회원의 고유 식별코드(<strong>JT-7K4M</strong>)와 열람 일시가 동적 워터마크로 표시됨에 동의합니다.
+              </span>
+            </label>
+            <label class="flex items-start gap-2.5 cursor-pointer">
+              <input id="chkConsentSingle" type="checkbox" checked class="mt-0.5 w-4 h-4 accent-[#f26522]" />
+              <span>
+                <strong class="text-[#333333]">[1인 1계정 이용 제한]</strong> 정토회 회원 본인 외 타인에게 계정을 대여·양도하거나 화면을 캡처하여 배포할 수 없음을
+                확인합니다.
+              </span>
+            </label>
+          </div>
+
+          <!-- Single Unified Virtual Account (송금) Payment Section -->
+          <div class="pt-2 grid grid-cols-1 sm:grid-cols-12 gap-3">
+            <button onclick="submitPurchaseOrder()"
+              class="sm:col-span-8 py-3.5 px-4 rounded bg-[#ee8545] hover:bg-[#d1743b] text-white font-extrabold text-xs md:text-sm shadow-sm transition flex flex-col items-center">
+              <span>🏦 1회용 가상계좌(송금) 및 구매 신청 (200,000원)</span>
+              <span class="text-[11px] font-normal text-white/90 mt-0.5">가상계좌 채번 즉시 [송금대기] 잠금 상태 생성<br> (입금 웹훅 수신 시 자동
+                열람
+                활성화)</span>
+            </button>
+            <button onclick="simulatePgWebhook('PAID_VERIFIED'); switchView('library');"
+              class="sm:col-span-4 py-3.5 px-3 rounded bg-[#519ea6] hover:bg-[#36858c] text-white font-extrabold text-xs shadow-sm transition flex flex-col items-center justify-center">
+              <span>⚡ 송금 완료(웹훅) 시뮬레이션</span>
+              <span class="text-[10px] font-normal text-white/90 mt-0.5">200,000원 입금확인 즉시 반영</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ========================================================================
+       VIEW 2: MY LIBRARY (내 서재 - 전 4권 세트 & 이어읽기 & 정오표 & 환불검증)
+       ======================================================================== -->
+  <main id="view-library" class="hidden flex-1 overflow-y-auto bg-[#f6f6f6] text-[#333333] p-4 md:p-8 select-text">
+    <div class="max-w-6xl mx-auto space-y-6">
+      <div id="libraryEntitlementBanner"></div>
+      <div id="libraryDeviceGuardPanel"></div>
+      <div id="libraryVolumeGrid" class="grid grid-cols-1 md:grid-cols-2 gap-5"></div>
+    </div>
+  </main>
+
+  <!-- ========================================================================
+       VIEW 3: PRODUCTION PDF.JS CUSTOM EBOOK VIEWER (jungto.org Clean Toolbar)
+       ======================================================================== -->
+  <main id="view-viewer" class="flex-1 flex flex-col overflow-hidden bg-[#f6f6f6]">
+    <!-- KakaoTalk / Naver In-App Browser Warning Banner -->
+    <div id="inAppBrowserWarningBanner"
+      class="hidden bg-[#ee8545] text-white px-4 py-2 text-xs font-bold flex flex-wrap items-center justify-between gap-2 shrink-0">
+      <div>
+        ⚠️ [인앱 브라우저 감지] 카카오톡·네이버 인앱 브라우저에서는 대용량 PDF 캔버스 메모리 제한이 발생할 수 있습니다. 우측 상단 메뉴에서 [Safari / Chrome 외부 브라우저로 열기]를
+        권장합니다.
+      </div>
+      <button onclick="toggleInAppBrowserSim()"
+        class="px-2.5 py-1 rounded bg-white text-[#d1743b] text-[11px] font-extrabold">배너 닫기</button>
+    </div>
+
+    <!-- Viewer Secondary Toolbar (White Surface + #ebe5e6 Border) -->
+    <div
+      class="bg-white border-b border-[#ebe5e6] px-4 py-2 flex flex-wrap items-center justify-between gap-2 shrink-0">
+      <!-- Left: Sidebar Toggle, Volume Select, Local File Upload -->
+      <div class="flex items-center gap-2 flex-wrap">
+        <button onclick="toggleViewerSidebar()"
+          class="px-3.5 py-1.5 rounded bg-[#519ea6] hover:bg-[#36858c] text-white text-xs font-bold transition min-h-[38px]">
+          ☰ 목차·북마크·검색
+        </button>
+
+        <select id="viewerVolumeSelector"
+          class="bg-white text-[#333333] text-xs font-bold rounded px-3 py-1.5 border border-[#d6d6d6] focus:outline-none focus:border-[#519ea6] min-h-[38px]">
+          <option value="vol1">📗 정토대전 제1권 경전편 (v1.0.1)</option>
+          <option value="vol2">📘 정토대전 제2권 사료편 (v1.0.1)</option>
+          <option value="vol3">📙 정토대전 제3권 법문편 (v1.0.1)</option>
+          <option value="vol4">📕 정토대전 제4권 해설·색인편 (v1.0.1)</option>
+          <option value="preview">👁️ 무료 맛보기 샘플 (제1권 발췌)</option>
+          <option value="tracemonkey">📄 [영문 검증] Mozilla TraceMonkey 논문 (14p)</option>
+        </select>
+
+        <label
+          class="cursor-pointer px-3 py-1.5 rounded bg-[#fbfbfb] hover:bg-[#f6f6f6] text-[#36858c] text-xs font-bold border border-[#d6d6d6] min-h-[38px] flex items-center transition">
+          📂 로컬 PDF 열기
+          <input id="localPdfUploadInput" type="file" accept="application/pdf" class="hidden" />
+        </label>
+      </div>
+
+      <!-- Center: Page Navigation & Logical PageLabel Indicator -->
+      <div class="flex items-center gap-1.5 bg-[#fbfbfb] px-2.5 py-1 rounded border border-[#ebe5e6]">
+        <button onclick="changePage(-1)"
+          class="px-2.5 py-1 rounded bg-white hover:bg-[#f6f6f6] border border-[#d6d6d6] text-[#333333] text-xs font-bold min-w-[36px] min-h-[32px]">◀
+          이전</button>
+        <input id="viewerPageInput" type="number" min="1" value="1" onchange="jumpToPage(this.value)"
+          class="w-12 text-center bg-white border border-[#d6d6d6] rounded text-xs font-bold py-1 text-[#333333]" />
+        <span id="viewerPageTotal" class="text-xs text-[#6d6d6d] font-mono">/ 10</span>
+        <span id="viewerLogicalLabelBadge"
+          class="ml-1 px-2.5 py-0.5 rounded-full bg-[#fde7da] text-[#f26522] text-[11px] font-bold">쪽수 1</span>
+        <button onclick="changePage(1)"
+          class="px-2.5 py-1 rounded bg-white hover:bg-[#f6f6f6] border border-[#d6d6d6] text-[#333333] text-xs font-bold min-w-[36px] min-h-[32px]">다음
+          ▶</button>
+      </div>
+
+      <!-- Right: Spread Mode, Zoom, Theme, Watermark & In-App Sim -->
+      <div class="flex items-center gap-1.5 flex-wrap">
+        <button id="btnToggleSpread" onclick="toggleSpreadMode()"
+          class="px-3 py-1.5 rounded bg-[#fbfbfb] hover:bg-[#f6f6f6] text-[#333333] text-xs font-bold border border-[#d6d6d6]">
+          📄 단면 보기
+        </button>
+
+        <div class="flex items-center bg-[#fbfbfb] rounded border border-[#d6d6d6] p-0.5">
+          <button onclick="changeZoom(-0.15)"
+            class="px-2 py-1 text-xs font-bold text-[#333333] hover:bg-[#ebebeb] rounded">－</button>
+          <span id="viewerZoomPercent" class="px-2 text-xs font-mono font-bold text-[#f26522]">135%</span>
+          <button onclick="changeZoom(0.15)"
+            class="px-2 py-1 text-xs font-bold text-[#333333] hover:bg-[#ebebeb] rounded">＋</button>
+          <button onclick="fitViewerMode('width')"
+            class="px-2 py-1 text-[11px] font-bold text-[#6d6d6d] hover:text-[#333333] hover:bg-[#ebebeb] rounded border-l border-[#e1e1e1]">폭맞춤</button>
+          <button onclick="fitViewerMode('page')"
+            class="px-2 py-1 text-[11px] font-bold text-[#6d6d6d] hover:text-[#333333] hover:bg-[#ebebeb] rounded">쪽맞춤</button>
+        </div>
+
+        <!-- Theme Selector (Warm Paper / Light / Dark) -->
+        <div class="flex items-center gap-1 bg-[#fbfbfb] p-1 rounded border border-[#d6d6d6]">
+          <button id="btnTheme-paper" onclick="setViewerTheme('paper')" title="미색 종이 모드"
+            class="px-2 py-1 rounded text-[11px] font-bold bg-[#f5efe2] text-[#333333]">미색</button>
+          <button id="btnTheme-light" onclick="setViewerTheme('light')" title="주간 밝은 모드"
+            class="px-2 py-1 rounded text-[11px] font-bold bg-white text-[#333333]">밝음</button>
+          <button id="btnTheme-dark" onclick="setViewerTheme('dark')" title="야간 다크 모드"
+            class="px-2 py-1 rounded text-[11px] font-bold bg-[#333333] text-white">야간</button>
+        </div>
+
+        <button onclick="toggleWatermarkVisibility()"
+          class="px-2.5 py-1.5 rounded bg-[#fbfbfb] hover:bg-[#f6f6f6] text-xs font-bold text-[#36858c] border border-[#519ea6]">
+          🛡️ 워터마크
+        </button>
+        <button onclick="toggleInAppBrowserSim()"
+          class="px-2 py-1.5 rounded bg-[#fbfbfb] hover:bg-[#f6f6f6] text-[11px] font-bold text-[#6d6d6d] border border-[#d6d6d6]"
+          title="카카오톡 인앱 브라우저 접속 시 안내 배너 시뮬레이션">
+          📱 인앱배너
+        </button>
+        <span id="viewerDpiBadge"
+          class="hidden 2xl:inline-block px-2.5 py-1 rounded-full bg-[#eef7f8] text-[#36858c] border border-[#519ea6] text-[11px] font-bold">
+          Retina 2.0x
+        </span>
+      </div>
+    </div>
+
+    <!-- Viewer Body: Left White Sidebar + Center Canvas Stage -->
+    <div class="flex-1 flex overflow-hidden relative">
+      <!-- Left Collapsible Sidebar (jungto.org Clean White Panel) -->
+      <aside id="viewerSidebar" class="w-80 bg-white border-r border-[#ebe5e6] flex flex-col shrink-0 z-20 shadow-sm">
+        <!-- Sidebar 4 Tabs -->
+        <div class="grid grid-cols-4 gap-1 p-2 bg-[#fbfbfb] border-b border-[#ebe5e6] text-xs font-bold">
+          <button id="sidebarTabBtn-toc" onclick="switchSidebarTab('toc')"
+            class="py-2 rounded bg-[#f26522] text-white font-bold shadow-sm transition">목차</button>
+          <button id="sidebarTabBtn-thumbs" onclick="switchSidebarTab('thumbs')"
+            class="py-2 rounded text-[#6d6d6d] hover:text-[#333333] hover:bg-[#ebebeb] transition">썸네일</button>
+          <button id="sidebarTabBtn-bookmarks" onclick="switchSidebarTab('bookmarks')"
+            class="py-2 rounded text-[#6d6d6d] hover:text-[#333333] hover:bg-[#ebebeb] transition">북마크</button>
+          <button id="sidebarTabBtn-search" onclick="switchSidebarTab('search')"
+            class="py-2 rounded text-[#6d6d6d] hover:text-[#333333] hover:bg-[#ebebeb] transition">검색</button>
+        </div>
+
+        <!-- Quick Search Bar (jungto.org .btn-search #ee8545 style) -->
+        <div class="p-3 border-b border-[#ebe5e6] bg-white">
+          <div class="flex gap-1.5">
+            <input id="viewerSearchInput" type="text" placeholder="본문 검색 (예: 연기법, 반야심경, 즉문즉설)"
+              onkeydown="if(event.key==='Enter') executeInBookSearch()"
+              class="flex-1 rounded bg-[#fbfbfb] border border-[#d6d6d6] px-3 py-2 text-xs text-[#333333] focus:outline-none focus:border-[#519ea6]" />
+            <button onclick="executeInBookSearch()"
+              class="px-3.5 py-2 rounded bg-[#ee8545] hover:bg-[#d1743b] text-white font-bold text-xs transition">
+              검색
+            </button>
+          </div>
+          <div class="flex flex-wrap gap-1.5 mt-2">
+            <span class="text-[11px] text-[#9a9a9a]">추천검색:</span>
+            <button onclick="document.getElementById('viewerSearchInput').value='연기법'; executeInBookSearch('연기법')"
+              class="text-[11px] font-bold text-[#36858c] hover:text-[#f26522] hover:underline">#연기법</button>
+            <button onclick="document.getElementById('viewerSearchInput').value='반야심경'; executeInBookSearch('반야심경')"
+              class="text-[11px] font-bold text-[#36858c] hover:text-[#f26522] hover:underline">#반야심경</button>
+            <button onclick="document.getElementById('viewerSearchInput').value='사성제'; executeInBookSearch('사성제')"
+              class="text-[11px] font-bold text-[#36858c] hover:text-[#f26522] hover:underline">#사성제</button>
+            <button onclick="document.getElementById('viewerSearchInput').value='정토행자'; executeInBookSearch('정토행자')"
+              class="text-[11px] font-bold text-[#36858c] hover:text-[#f26522] hover:underline">#정토행자</button>
+          </div>
+        </div>
+
+        <!-- Sidebar Tab Panels -->
+        <div class="flex-1 overflow-y-auto p-3">
+          <div id="sidebarPanel-toc"></div>
+          <div id="sidebarPanel-thumbs" class="hidden"></div>
+          <div id="sidebarPanel-bookmarks" class="hidden"></div>
+          <div id="sidebarPanel-search" class="hidden">
+            <div id="sidebarSearchResults" class="text-xs text-[#6d6d6d] py-4 text-center">
+              상단 검색창에 경전 용어나 구절을 입력하면 일치하는 모든 페이지와 문맥 스니펫을 표시합니다.
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Main PDF Canvas Scroll Stage -->
+      <div id="viewerCanvasScrollArea"
+        class="flex-1 overflow-auto p-4 md:p-8 flex justify-center items-start relative theme-paper">
+        <!-- Loading Spinner -->
+        <div id="viewerLoadingOverlay"
+          class="hidden absolute inset-0 bg-white/80 z-30 flex items-center justify-center">
+          <div
+            class="bg-white border-2 border-[#519ea6] rounded-xl px-6 py-4 text-sm font-bold text-[#36858c] shadow-lg">
+            ⏳ 고해상도 벡터 PDF 및 TextLayer 렌더링 중...
+          </div>
+        </div>
+
+        <!-- Focus-Loss / Screen Capture Deterrent Privacy Blur Shield -->
+        <div id="privacyBlurShield" onclick="this.classList.add('hidden')"
+          class="hidden absolute inset-0 backdrop-blur-xl bg-white/85 z-30 flex flex-col items-center justify-center p-6 text-center cursor-pointer">
+          <div class="text-2xl font-extrabold text-[#f26522] mb-2">🛡️ 저작권 보호 화면 블러 활성화됨</div>
+          <p class="text-xs text-[#333333] max-w-md leading-relaxed font-medium">
+            브라우저 창 포커스가 이탈하여 화면 캡처 방지 보호막이 작동했습니다. 화면을 클릭하시면 즉시 열람을 계속하실 수 있습니다.
+          </p>
+        </div>
+
+        <!-- Spread Container (Single or Dual Page) -->
+        <div class="relative flex flex-col xl:flex-row items-center justify-center gap-6 my-auto">
+          <!-- Dynamic Watermark Overlay -->
+          <div id="dynamicWatermarkOverlay" aria-hidden="true"
+            class="pointer-events-none absolute inset-0 z-20 grid grid-cols-2 gap-12 items-center justify-items-center overflow-hidden p-6">
+          </div>
+
+          <!-- Left / Single Page Card -->
+          <div id="pageContainerLeft" class="pdf-page-card rounded-sm relative transition-all border border-[#ebe5e6]">
+            <div class="relative">
+              <canvas id="pdfCanvasLeft" class="block"></canvas>
+              <div id="textLayerLeft" class="textLayer absolute inset-0 select-text"></div>
+            </div>
+            <div id="pageBadgeLeft"
+              class="text-center py-1.5 text-[11px] font-mono text-[#6d6d6d] border-t border-[#ebe5e6] bg-[#fbfbfb]">
+              PDF 1p
+            </div>
+          </div>
+
+          <!-- Right Page Card (Visible in Dual Spread Mode) -->
+          <div id="pageContainerRight"
+            class="hidden pdf-page-card rounded-sm relative transition-all border border-[#ebe5e6]">
+            <div class="relative">
+              <canvas id="pdfCanvasRight" class="block"></canvas>
+              <div id="textLayerRight" class="textLayer absolute inset-0 select-text"></div>
+            </div>
+            <div id="pageBadgeRight"
+              class="text-center py-1.5 text-[11px] font-mono text-[#6d6d6d] border-t border-[#ebe5e6] bg-[#fbfbfb]">
+              PDF 2p
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Geumgang DRM Live Telemetry Bar (HTTP 206 64KB Range & iOS 3-Page Sliding Window) -->
+    <div id="viewerDrmTelemetryBar"
+      class="bg-[#1e293b] text-white px-4 py-2 text-[11px] font-mono flex flex-wrap items-center justify-between gap-2 shrink-0 border-t border-[#334155]">
+      <div class="flex items-center gap-3 flex-wrap">
+        <span class="px-2 py-0.5 rounded bg-[#047857] text-[#a7f3d0] font-bold">금강(金剛) DRM 3-Layer ACTIVE</span>
+        <span id="telemetryHttp206" class="text-[#22c55e]">HTTP 206 Range: bytes=131072-196607/278966 (64KB Chunk #2)</span>
+        <span class="text-slate-400">|</span>
+        <span id="telemetrySlidingWindow" class="text-[#93c5fd]">3-Page Window: [p.2, p.3, p.4] Active · Offscreen Canvas width=0 (iOS OOM 방어)</span>
+      </div>
+      <div class="flex items-center gap-3 flex-wrap">
+        <span id="telemetryDeviceSlots" class="text-[#fed7aa]">기기슬롯: 2/3대 활성</span>
+        <span class="text-slate-400">|</span>
+        <span id="telemetryForensicHash" class="text-[#ddd6fe]">X-Forensic-WM: JTS-WM-SHA256(JT-7K4M:vol1:p3)</span>
+      </div>
+    </div>
+  </main>
+
+  <!-- ========================================================================
+       VIEW 4: SYSTEM OPERATIONS & CS ADMIN CONSOLE (/ops - jungto.org Light UI)
+       ======================================================================== -->
+  <main id="view-ops" class="hidden flex-1 overflow-y-auto bg-[#f6f6f6] text-[#333333] p-4 md:p-8 select-text">
+    <div class="max-w-6xl mx-auto space-y-6">
+      <div
+        class="flex flex-wrap items-center justify-between gap-3 bg-white p-5 rounded-xl border border-[#ebe5e6] shadow-sm">
+        <div>
+          <span class="px-2.5 py-0.5 rounded-full bg-[#fde7da] text-[#f26522] text-xs font-extrabold">ROLE: OPS_ADMIN /
+            CS_MANAGER</span>
+          <h1 class="text-xl font-extrabold text-[#333333] mt-1">시스템국 『정토대전』 통합 운영·CS·보안 감사 콘솔 (/ops)</h1>
+        </div>
+        <button onclick="exportSettlementCsv()"
+          class="px-4 py-2.5 rounded bg-[#519ea6] hover:bg-[#36858c] text-white text-xs font-bold shadow-sm transition flex items-center gap-2">
+          📥 가상계좌(송금) 입금대사 및 정산 원장 CSV 다운로드
+        </button>
+      </div>
+
+      <!-- Current Member & Entitlement Snapshot -->
+      <div id="opsMemberEntitlementCard"></div>
+
+      <!-- 6-Table PostgreSQL & Redis 7 Live State Inspector -->
+      <div id="opsDatabaseStatePanel"></div>
+
+      <!-- 3 Operational Simulators & Tools -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+        <!-- Tool 1: PG Webhook & Idempotency Simulator -->
+        <div class="bg-white rounded-xl p-5 border border-[#ebe5e6] shadow-sm space-y-3">
+          <h2 class="text-sm font-extrabold text-[#f26522]">⚡ 1. PG 결제/가상계좌 웹훅 & 멱등성 시뮬레이터</h2>
+          <p class="text-xs text-[#6d6d6d] leading-relaxed">
+            가상계좌 입금 완료, 중복 웹훅 재전송(`EventInbox` 차단), PG 결제 취소/환불 수신 시 열람권(`Entitlement`) 상태가 자동 동기화되는지 검증합니다.
+          </p>
+          <div class="space-y-2 pt-1">
+            <button onclick="simulatePgWebhook('PAID_VERIFIED')"
+              class="w-full py-2.5 px-3 rounded bg-[#519ea6] hover:bg-[#36858c] text-white text-xs font-bold text-left flex justify-between items-center transition">
+              <span>✅ 가상계좌 입금완료 웹훅 (PAID_VERIFIED)</span>
+              <span class="font-mono text-[10px] opacity-90">→ ACTIVE</span>
+            </button>
+            <button onclick="simulatePgWebhook('DUPLICATE_TEST')"
+              class="w-full py-2.5 px-3 rounded bg-[#fbfbfb] hover:bg-[#f6f6f6] text-[#333333] border border-[#d6d6d6] text-xs font-bold text-left flex justify-between items-center transition">
+              <span>🔁 동일 EventID 중복 웹훅 전송 (멱등성 검증)</span>
+              <span class="font-mono text-[10px] text-[#f26522] font-bold">→ NO-OP</span>
+            </button>
+            <button onclick="simulatePgWebhook('REFUNDED_CONFIRMED')"
+              class="w-full py-2.5 px-3 rounded bg-[#ee8545] hover:bg-[#d1743b] text-white text-xs font-bold text-left flex justify-between items-center transition">
+              <span>🚫 PG 환불/취소 완료 웹훅 (REFUNDED)</span>
+              <span class="font-mono text-[10px] opacity-90">→ REVOKED</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Tool 2: CS Manual Entitlement Override (Requires Audit Reason) -->
+        <div class="bg-white rounded-xl p-5 border border-[#ebe5e6] shadow-sm space-y-3">
+          <h2 class="text-sm font-extrabold text-[#36858c]">🛠️ 2. CS 열람권 수동 제어 (사유 입력 필수)</h2>
+          <p class="text-xs text-[#6d6d6d] leading-relaxed">
+            운영자 임의 DB 수정을 금지하며, 모든 권한 변경은 사유(5자 이상)와 함께 `AuditEvent` 테이블에 불변 기록됩니다.
+          </p>
+          <input id="csAuditReasonInput" type="text" placeholder="필수: CS 조치 사유 입력 (예: 단말기 오류로 인한 열람개시 초기화)"
+            class="w-full rounded bg-[#fbfbfb] border border-[#d6d6d6] px-3 py-2 text-xs text-[#333333] focus:outline-none focus:border-[#519ea6]" />
+          <div class="grid grid-cols-2 gap-2 pt-1">
+            <button onclick="executeCsEntitlementChange('ACTIVE')"
+              class="py-2 px-2.5 rounded bg-[#519ea6] hover:bg-[#36858c] text-white text-xs font-bold transition">
+              권한 즉시 부여 (ACTIVE)
+            </button>
+            <button onclick="executeCsEntitlementChange('HOLD')"
+              class="py-2 px-2.5 rounded bg-[#ee8545] hover:bg-[#d1743b] text-white text-xs font-bold transition">
+              일시 정지 (HOLD)
+            </button>
+            <button onclick="executeCsEntitlementChange('REVOKED')"
+              class="py-2 px-2.5 rounded bg-[#d9534f] hover:bg-red-700 text-white text-xs font-bold transition">
+              권한 회수 (REVOKED)
+            </button>
+            <button onclick="executeCsEntitlementChange('RESET_READING_START')"
+              class="py-2 px-2.5 rounded bg-[#fbfbfb] hover:bg-[#ebebeb] text-[#333333] border border-[#d6d6d6] text-xs font-bold transition">
+              미열람 상태로 초기화
+            </button>
+          </div>
+        </div>
+
+        <!-- Tool 3: Forensic Watermark Code Tracer -->
+        <div class="bg-white rounded-xl p-5 border border-[#ebe5e6] shadow-sm space-y-3">
+          <h2 class="text-sm font-extrabold text-[#333333]">🔍 3. 유출 이미지 워터마크 코드 역추적기</h2>
+          <p class="text-xs text-[#6d6d6d] leading-relaxed">
+            외부 커뮤니티 등에 유출된 캡처 화면의 워터마크 식별코드(예: `JT-7K4M`)를 입력하여 유출 회원 및 접속 세션을 즉시 특정합니다.
+          </p>
+          <div class="flex gap-2">
+            <input id="opsWatermarkSearchInput" type="text" value="JT-7K4M" placeholder="식별코드 입력 (예: JT-7K4M)"
+              class="flex-1 rounded bg-[#fbfbfb] border border-[#d6d6d6] px-3 py-2 text-xs font-mono font-bold text-[#f26522] focus:outline-none focus:border-[#519ea6]" />
+            <button onclick="traceWatermarkCode()"
+              class="px-4 py-2 rounded bg-[#ee8545] hover:bg-[#d1743b] text-white text-xs font-bold transition">
+              역추적 조회
+            </button>
+          </div>
+          <div id="opsWatermarkTraceResult"></div>
+        </div>
+      </div>
+
+      <!-- EventInbox & AuditEvent Tables -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+        <div class="bg-white rounded-xl p-5 border border-[#ebe5e6] shadow-sm">
+          <h3 class="text-sm font-extrabold text-[#333333] mb-3">📨 PG 웹훅 수신 인박스 (`EventInbox` 멱등성 검증 테이블)</h3>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-[#fbfbfb] text-[#6d6d6d] border-b border-[#ebe5e6]">
+                <tr>
+                  <th class="py-2.5 px-3">Event ID</th>
+                  <th class="py-2.5 px-3">이벤트 유형</th>
+                  <th class="py-2.5 px-3">주문번호</th>
+                  <th class="py-2.5 px-3">멱등성 처리 결과</th>
+                  <th class="py-2.5 px-3">수신 시각</th>
+                </tr>
+              </thead>
+              <tbody id="opsEventInboxTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-xl p-5 border border-[#ebe5e6] shadow-sm">
+          <h3 class="text-sm font-extrabold text-[#333333] mb-3">🛡️ 불변 운영 감사 로그 (`AuditEvent` 5년 보존 원장)</h3>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-[#fbfbfb] text-[#6d6d6d] border-b border-[#ebe5e6]">
+                <tr>
+                  <th class="py-2.5 px-3">Audit ID</th>
+                  <th class="py-2.5 px-3">수행 주체</th>
+                  <th class="py-2.5 px-3">액션</th>
+                  <th class="py-2.5 px-3">상세 사유</th>
+                  <th class="py-2.5 px-3">기록 시각</th>
+                </tr>
+              </thead>
+              <tbody id="opsAuditLogTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ========================================================================
+       MODALS (ReadingStart Consent / Errata v1.0.1 / Refund Statutory Check)
+       ======================================================================== -->
+  <!-- 1. ReadingStart First-Open Consent Modal -->
+  <div id="modalReadingStart"
+    class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 select-text">
+    <div class="bg-white text-[#333333] rounded-xl max-w-lg w-full p-6 shadow-2xl border border-[#ebe5e6] space-y-4">
+      <div class="flex items-center gap-2 text-[#f26522] font-extrabold text-sm">
+        <span>⚖️ 전자출판물 최초 열람 개시(ReadingStart) 법정 확인</span>
+      </div>
+      <h3 class="text-lg font-extrabold text-[#333333]">『정토대전』 전자책 본문 열람을 시작하시겠습니까?</h3>
+      <p class="text-xs text-[#6d6d6d] leading-relaxed">
+        「전자상거래 등에서의 소비자보호에 관한 법률」 제17조 제2항 제5호에 따라, 디지털 콘텐츠(eBook)의 열람을 최초 1회 개시하면 콘텐츠 가치가 소비된 것으로 간주되어 <strong
+          class="text-[#333333]">이후 단순 변심에 의한 온라인 청약철회(환불)가 제한</strong>됩니다.
+      </p>
+      <label
+        class="flex items-start gap-2.5 p-3.5 rounded-lg bg-[#fde7da]/50 border border-[#ee8545] text-xs text-[#333333] cursor-pointer">
+        <input id="chkReadingStartModalConsent" type="checkbox" checked class="mt-0.5 w-4 h-4 accent-[#f26522]" />
+        <span>위 청약철회 제한 규정을 확인하였으며, 지금 본문 열람 개시(<code>ReadingStart</code>) 시각을 기록하고 뷰어를 엽니다.</span>
+      </label>
+      <div class="flex justify-end gap-2 pt-2">
+        <button onclick="document.getElementById('modalReadingStart').classList.add('hidden')"
+          class="px-4 py-2.5 rounded bg-[#f6f6f6] hover:bg-[#ebebeb] text-[#6d6d6d] text-xs font-bold border border-[#d6d6d6]">
+          취소 (미열람 유지)
+        </button>
+        <button onclick="confirmReadingStartConsent()"
+          class="px-5 py-2.5 rounded bg-[#ee8545] hover:bg-[#d1743b] text-white text-xs font-bold shadow-sm">
+          동의 및 전자책 열람 시작
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Errata (정오표 v1.0.1) Modal -->
+  <div id="modalErrata" class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 select-text">
+    <div
+      class="bg-white text-[#333333] rounded-xl max-w-4xl w-full p-6 shadow-2xl border border-[#ebe5e6] space-y-4 max-h-[85vh] flex flex-col">
+      <div class="flex items-center justify-between border-b border-[#ebe5e6] pb-3">
+        <div>
+          <span
+            class="px-2.5 py-0.5 rounded-full bg-[#eef7f8] text-[#36858c] border border-[#519ea6] text-xs font-bold">불변
+            버전 매니페스트: v1.0.0 → v1.0.1</span>
+          <h3 class="text-lg font-extrabold text-[#333333] mt-1">『정토대전』 전 4권 공식 정오표 (Errata) 및 개정 대조표</h3>
+        </div>
+        <button onclick="document.getElementById('modalErrata').classList.add('hidden')"
+          class="px-3 py-1.5 rounded bg-[#f6f6f6] hover:bg-[#ebebeb] text-xs font-bold border border-[#d6d6d6]">✕
+          닫기</button>
+      </div>
+      <div class="overflow-y-auto flex-1">
+        <table class="w-full text-left border-collapse">
+          <thead class="bg-[#fbfbfb] text-[#6d6d6d] text-xs border-b border-[#ebe5e6]">
+            <tr>
+              <th class="py-2.5 px-3">관리번호</th>
+              <th class="py-2.5 px-3">권호 / 위치</th>
+              <th class="py-2.5 px-3">초판 (v1.0.0) 표기</th>
+              <th class="py-2.5 px-3">개정판 (v1.0.1) 반영 내용</th>
+              <th class="py-2.5 px-3 text-right">본문 이동</th>
+            </tr>
+          </thead>
+          <tbody id="errataModalBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. Refund Eligibility Statutory Check Modal -->
+  <div id="modalRefundCheck"
+    class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 select-text">
+    <div class="bg-white text-[#333333] rounded-xl max-w-lg w-full p-6 shadow-2xl border border-[#ebe5e6] space-y-4">
+      <div class="flex items-center justify-between border-b border-[#ebe5e6] pb-3">
+        <h3 class="text-lg font-extrabold text-[#333333]">⚖️ 전자상거래법 청약철회(환불) 자동 자격 검증</h3>
+        <button onclick="document.getElementById('modalRefundCheck').classList.add('hidden')"
+          class="px-3 py-1 rounded bg-[#f6f6f6] border border-[#d6d6d6] text-xs font-bold">닫기</button>
+      </div>
+      <div id="refundCheckModalBody"></div>
+    </div>
+  </div>
+
+  <!-- 4. Device 3-Slot Limit Exceeded (HTTP 403) & Remote Unbind Modal -->
+  <div id="modalDeviceLimit"
+    class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 select-text">
+    <div class="bg-white text-[#333333] rounded-xl max-w-2xl w-full p-6 shadow-2xl border border-[#ebe5e6] space-y-4">
+      <div class="flex items-center justify-between border-b border-[#ebe5e6] pb-3">
+        <div>
+          <span class="px-2.5 py-0.5 rounded-full bg-red-100 text-red-700 border border-red-300 text-xs font-extrabold">HTTP 403 · DEVICE_LIMIT_EXCEEDED</span>
+          <h3 class="text-lg font-extrabold text-[#333333] mt-1">🔐 동시 등록 기기 한도(최대 3대) 초과 · 원격 기기 해제</h3>
+        </div>
+        <button onclick="document.getElementById('modalDeviceLimit').classList.add('hidden')"
+          class="px-3 py-1 rounded bg-[#f6f6f6] border border-[#d6d6d6] text-xs font-bold">닫기</button>
+      </div>
+      <div id="deviceLimitModalBody"></div>
+    </div>
+  </div>
+
+  <!-- Global Toast Notification -->
+  <div id="globalToast" style="opacity:0; pointer-events:none;"></div>
+
+  <!-- Main Application Script -->
+  <script src="jungto_ebook_app.js"></script>
+</body>
+
+</html>

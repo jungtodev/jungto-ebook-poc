@@ -1,0 +1,96 @@
+{
+  "edition_version": "v1.0.0",
+  "volume_no": 1,
+  "title": "제1권 경전편 (經典篇)",
+  "dom_text_exposed": false,
+  "indexed_terms": [
+    {
+      "term": "연기법",
+      "page": 3,
+      "print_page_label": "쪽 1",
+      "bbox_norm": [
+        0.14,
+        0.22,
+        0.72,
+        0.038
+      ]
+    },
+    {
+      "term": "사성제",
+      "page": 4,
+      "print_page_label": "쪽 2",
+      "bbox_norm": [
+        0.14,
+        0.29,
+        0.72,
+        0.038
+      ]
+    },
+    {
+      "term": "팔정도",
+      "page": 5,
+      "print_page_label": "쪽 3",
+      "bbox_norm": [
+        0.14,
+        0.36,
+        0.72,
+        0.038
+      ]
+    },
+    {
+      "term": "중도",
+      "page": 6,
+      "print_page_label": "쪽 4",
+      "bbox_norm": [
+        0.14,
+        0.43,
+        0.72,
+        0.038
+      ]
+    },
+    {
+      "term": "무아",
+      "page": 7,
+      "print_page_label": "쪽 5",
+      "bbox_norm": [
+        0.14,
+        0.5,
+        0.72,
+        0.038
+      ]
+    },
+    {
+      "term": "금강경",
+      "page": 8,
+      "print_page_label": "쪽 6",
+      "bbox_norm": [
+        0.14,
+        0.57,
+        0.72,
+        0.038
+      ]
+    },
+    {
+      "term": "반야심경",
+      "page": 9,
+      "print_page_label": "쪽 7",
+      "bbox_norm": [
+        0.14,
+        0.64,
+        0.72,
+        0.038
+      ]
+    },
+    {
+      "term": "공성",
+      "page": 10,
+      "print_page_label": "쪽 8",
+      "bbox_norm": [
+        0.14,
+        0.71,
+        0.72,
+        0.038
+      ]
+    }
+  ]
+}
